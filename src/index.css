@@ -134,14 +134,16 @@ body,
 }
 
 .taskbar-item {
+    width: 36px;
     height: 30px;
-    padding: 0 12px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.06);
     border: none;
-    border-radius: 6px;
     color: #e5e7eb;
-    font-size: 12px;
+    font-size: 16px;
     cursor: pointer;
+    display: grid;
+    place-items: center;
 }
 
 .taskbar-item:hover {
@@ -150,4 +152,117 @@ body,
 
 .taskbar-item.active {
     background: rgba(59, 130, 246, 0.5);
+}
+
+.taskbar-item::after {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 2px;
+    background: transparent;
+    border-radius: 2px;
+}
+
+.taskbar-item.active::after {
+    background: #60a5fa;
+}
+
+/* ---------------- Start Button ---------------- */
+
+.start-button {
+    width: 36px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(59, 130, 246, 0.6);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ---------------- App Launcher ---------------- */
+
+.app-launcher {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.app-launcher-panel {
+    position: absolute;
+    bottom: 52px;
+    left: 8px;
+    width: 320px;
+    background: #121826;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+}
+
+.app-launcher-panel h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #e5e7eb;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.app-tile {
+    height: 80px;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 10px;
+    color: #e5e7eb;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.app-tile:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.app-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+/* ---------------- App Search ---------------- */
+
+.app-search {
+    width: 100%;
+    height: 34px;
+    margin-bottom: 12px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e7eb;
+    font-size: 13px;
+}
+
+.app-search::placeholder {
+    color: rgba(229, 231, 235, 0.5);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(229, 231, 235, 0.6);
+    padding: 20px 0;
+}
+
+.launcher-section {
+    margin: 8px 0 6px;
+    font-size: 12px;
+    color: rgba(229, 231, 235, 0.7);
 }
