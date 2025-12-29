@@ -169,7 +169,11 @@ export default function Window({
 
     return (
         <div
-            className="window"
+            className={`window
+                ${dragging ? "dragging" : ""}
+                ${maximized ? "maximized" : ""}    
+                ${snapPreview ? "snap-preview" : ""}
+            `}
             onMouseDown={handleFocus}
             style={{
                 top: pos.y,

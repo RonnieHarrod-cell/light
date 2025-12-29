@@ -49,6 +49,12 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: white;
     user-select: none;
+    transition: 
+        left 0.18s ease,
+        top 0.18s ease,
+        width 0.18s ease,
+        height 0.18s ease,
+        transform 0.12s ease;
 }
 
 .window-header {
@@ -77,6 +83,29 @@ body {
     border-radius: 4px;
 }
 
+.window.dragging {
+    transition: none;
+    transform: scale(1.02);
+    z-index: 9999;
+}
+
+.window.maximized {
+    animation: popIn 0.14s ease;
+}
+
 button {
     cursor: pointer;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.98);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.window.snap-preview {
+    box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.8);
 }
