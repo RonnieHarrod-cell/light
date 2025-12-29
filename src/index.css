@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #0e1628;
+    color: white;
+}
+
+.desktop {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(#0e1628, #101b33);
+    position: relative;
+    overflow: hidden;
+}
+
+.icon {
+    width: 70px;
+    text-align: center;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    background: rgba(20, 25, 40, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.task-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.window {
+    position: absolute;
+    width: 350px;
+    height: 260px;
+    background: #1e293b;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: white;
+    user-select: none;
+}
+
+.window-header {
+    height: 35px;
+    background: #334155;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: grab;
+}
+
+.window-body {
+    padding: 10px;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    right: 2px;
+    bottom: 2px;
+    cursor: se-resize;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+}
