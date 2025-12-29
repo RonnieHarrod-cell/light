@@ -1,4 +1,4 @@
-export interface AppWindow {
+export interface WindowData {
     id: string;
     title: string;
     component: JSX.Element;

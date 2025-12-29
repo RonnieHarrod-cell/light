@@ -1,111 +1,153 @@
-body {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    background: #0e1628;
-    color: white;
+/* ---------------- Root ---------------- */
+
+* {
+    box-sizing: border-box;
+    user-select: none;
 }
 
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #0b0f1a;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+}
+
+/* ---------------- Desktop ---------------- */
+
 .desktop {
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(#0e1628, #101b33);
     position: relative;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
-.icon {
-    width: 70px;
-    text-align: center;
-    margin: 10px;
+/* ---------------- Window ---------------- */
+
+.wm-window {
+    position: absolute;
+    background: #121826;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.12s ease,
+        width 0.12s ease,
+        height 0.12s ease;
+}
+
+.wm-window.focused {
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.75);
+}
+
+/* ---------------- Title Bar ---------------- */
+
+.wm-titlebar {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    background: linear-gradient(180deg, #1b2235, #141a2b);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: grab;
+}
+
+.wm-titlebar:active {
+    cursor: grabbing;
+}
+
+.wm-title {
+    font-size: 13px;
+    color: #e5e7eb;
+    pointer-events: none;
+}
+
+/* ---------------- Controls ---------------- */
+
+.wm-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.wm-controls button {
+    width: 28px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    font-size: 12px;
+    border-radius: 4px;
     cursor: pointer;
 }
+
+.wm-controls button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.wm-controls button:last-child:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* ---------------- Content ---------------- */
+
+.wm-content {
+    flex: 1;
+    padding: 10px;
+    color: #e5e7eb;
+    overflow: auto;
+}
+
+/* ---------------- Scrollbars ---------------- */
+
+.wm-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.wm-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+/* ---------------- Taskbar ---------------- */
 
 .taskbar {
     position: absolute;
     bottom: 0;
     left: 0;
-    right: 0;
-    height: 45px;
-    background: rgba(20, 25, 40, 0.9);
+    height: 44px;
+    width: 100%;
+    background: rgba(20, 26, 43, 0.85);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0 10px;
+    gap: 6px;
+    padding: 0 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.task-item {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px 10px;
+.taskbar-item {
+    height: 30px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
     border-radius: 6px;
+    color: #e5e7eb;
+    font-size: 12px;
     cursor: pointer;
 }
 
-.window {
-    position: absolute;
-    width: 350px;
-    height: 260px;
-    background: #1e293b;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    color: white;
-    user-select: none;
-    transition: 
-        left 0.18s ease,
-        top 0.18s ease,
-        width 0.18s ease,
-        height 0.18s ease,
-        transform 0.12s ease;
+.taskbar-item:hover {
+    background: rgba(255, 255, 255, 0.12);
 }
 
-.window-header {
-    height: 35px;
-    background: #334155;
-    border-radius: 10px 10px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    cursor: grab;
-}
-
-.window-body {
-    padding: 10px;
-}
-
-.resize-handle {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    right: 2px;
-    bottom: 2px;
-    cursor: se-resize;
-    background: rgba(255,255,255,0.2);
-    border-radius: 4px;
-}
-
-.window.dragging {
-    transition: none;
-    transform: scale(1.02);
-    z-index: 9999;
-}
-
-.window.maximized {
-    animation: popIn 0.14s ease;
-}
-
-button {
-    cursor: pointer;
-}
-
-@keyframes popIn {
-    from {
-        transform: scale(0.98);
-    }
-    to {
-        transform: scale(1);
-    }
-}
-
-.window.snap-preview {
-    box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.8);
+.taskbar-item.active {
+    background: rgba(59, 130, 246, 0.5);
 }
