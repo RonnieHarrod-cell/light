@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AppWindow } from "../types";
 
 const GRID_SIZE = 20;
+const SNAP_THRESHOLD = 30;
 
 export default function Window({
     app,
@@ -14,15 +15,16 @@ export default function Window({
     onMinimize: () => void;
     onFocus: () => void;
 }) {
-    const ref = useRef<HTMLDivElement>(null);
-
     const [pos, setPos] = useState({ x: app.x, y: app.y });
     const [size, setSize] = useState({ w: 350, h: 260 });
 
     const [dragging, setDragging] = useState(false);
     const [resizing, setResizing] = useState(false);
-
     const [maximized, setMaximized] = useState(false);
+
+    const [snapPreview, setSnapPreview] = useState<
+        null | "left" | "right" | "top"
+    >(null);
 
     const previousState = useRef({
         x: app.x,
@@ -36,9 +38,9 @@ export default function Window({
 
     const handleFocus = () => onFocus();
 
-    // ---------- DRAG ----------
+    // ------------- DRAG -----------------
     const startDrag = (e: React.MouseEvent) => {
-        if (maximized) return; // cannot drag maximized window
+        if (maximized) return;
 
         setDragging(true);
         dragOffset.current = {
@@ -47,9 +49,9 @@ export default function Window({
         };
     };
 
-    // ---------- RESIZE ----------
+    // ------------- RESIZE -----------------
     const startResize = (e: React.MouseEvent) => {
-        if (maximized) return; // cannot resize maximized window
+        if (maximized) return;
 
         e.stopPropagation();
         setResizing(true);
@@ -62,12 +64,22 @@ export default function Window({
         };
     };
 
+    const snap = (v: number) => Math.round(v / GRID_SIZE) * GRID_SIZE;
+
+    // ------------- DRAG MOVE -----------------
     const onMouseMove = (e: MouseEvent) => {
         if (dragging) {
-            setPos({
-                x: e.clientX - dragOffset.current.x,
-                y: e.clientY - dragOffset.current.y
-            });
+            const newX = e.clientX - dragOffset.current.x;
+            const newY = e.clientY - dragOffset.current.y;
+
+            setPos({ x: newX, y: newY });
+
+            // detect snap preview
+            if (e.clientX < SNAP_THRESHOLD) setSnapPreview("left");
+            else if (window.innerWidth - e.clientX < SNAP_THRESHOLD)
+                setSnapPreview("right");
+            else if (e.clientY < SNAP_THRESHOLD) setSnapPreview("top");
+            else setSnapPreview(null);
         }
 
         if (resizing) {
@@ -84,18 +96,32 @@ export default function Window({
         }
     };
 
-    const snap = (v: number) => Math.round(v / GRID_SIZE) * GRID_SIZE;
-
+    // ------------- APPLY SNAP -----------------
     const stopActions = () => {
         if (dragging) {
-            setPos(p => ({
-                x: snap(p.x),
-                y: snap(p.y)
-            }));
+            if (snapPreview === "left") {
+                saveState();
+                setPos({ x: 0, y: 0 });
+                setSize({ w: window.innerWidth / 2, h: window.innerHeight });
+                setMaximized(false);
+            } else if (snapPreview === "right") {
+                saveState();
+                setPos({ x: window.innerWidth / 2, y: 0 });
+                setSize({ w: window.innerWidth / 2, h: window.innerHeight });
+                setMaximized(false);
+            } else if (snapPreview === "top") {
+                toggleMaximize();
+            } else {
+                setPos(p => ({
+                    x: snap(p.x),
+                    y: snap(p.y)
+                }));
+            }
         }
 
         setDragging(false);
         setResizing(false);
+        setSnapPreview(null);
     };
 
     useEffect(() => {
@@ -108,25 +134,27 @@ export default function Window({
         };
     });
 
-    // ---------- MAXIMIZE ----------
+    // -------- SAVE CURRENT GEOMETRY --------
+    const saveState = () => {
+        previousState.current = {
+            x: pos.x,
+            y: pos.y,
+            w: size.w,
+            h: size.h
+        };
+    };
+
+    // -------- MAXIMIZE TOGGLE --------
     const toggleMaximize = () => {
         if (!maximized) {
-            // save current state
-            previousState.current = {
-                x: pos.x,
-                y: pos.y,
-                w: size.w,
-                h: size.h
-            };
-
+            saveState();
             setPos({ x: 0, y: 0 });
             setSize({
                 w: window.innerWidth,
-                h: window.innerHeight - 40 // leave space if taskbar
+                h: window.innerHeight
             });
             setMaximized(true);
         } else {
-            // restore
             setPos({
                 x: previousState.current.x,
                 y: previousState.current.y
@@ -141,7 +169,6 @@ export default function Window({
 
     return (
         <div
-            ref={ref}
             className="window"
             onMouseDown={handleFocus}
             style={{
@@ -149,10 +176,20 @@ export default function Window({
                 left: pos.x,
                 width: size.w,
                 height: size.h,
-                zIndex: app.zIndex
+                zIndex: app.zIndex,
+                outline:
+                    snapPreview === "left" ||
+                        snapPreview === "right" ||
+                        snapPreview === "top"
+                        ? "2px solid rgba(255,255,255,.25)"
+                        : "none"
             }}
         >
-            <div className="window-header" onMouseDown={startDrag} onDoubleClick={toggleMaximize}>
+            <div
+                className="window-header"
+                onMouseDown={startDrag}
+                onDoubleClick={toggleMaximize}
+            >
                 <span>{app.title}</span>
 
                 <div>
